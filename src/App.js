@@ -12,6 +12,7 @@ function App() {
 	const [isProfileChekedPrice, setIsProfileChekedPrice] = useState(0);
 	const [total, setTotal] = useState(0);
 	const [errors, setErrors] = useState({});
+	const [togleValue, setTogleValue] = useState(false);
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -31,6 +32,13 @@ function App() {
 		servicePrice,
 	]);
 
+	useEffect(() => {
+		if (togleValue) {
+			setIsmonthly(false);
+		} else {
+			setIsmonthly(true);
+		}
+	}, [togleValue]);
 	const handePriceForOnline = () => {
 		if (isMontly) {
 			setIsOnlineChekedPrice(1);
@@ -56,6 +64,7 @@ function App() {
 	const nextStep = () => {
 		let hasErrors = false; // Local flag to track validation errors
 
+		console.log(step);
 		const validate = (filed, fieldName, message) => {
 			if (filed.length === 0) {
 				setErrors((prevErrors) => ({
@@ -71,6 +80,7 @@ function App() {
 		// Validate name
 		validate(name, "name", "this filed is required");
 		validate(email, "email", "this filed is required");
+
 		validate(phone, "phone", "this filed is required");
 
 		// Validate email
@@ -89,20 +99,6 @@ function App() {
 				...prevErrors,
 				serviceCatagory: "",
 			}));
-		}
-
-		if (step === 2) {
-			if (serviceCatagory.length === 0) {
-				setErrors((prevErrors) => ({
-					...prevErrors,
-					serviceCatagory: "Please Select catagory",
-				}));
-			} else {
-				setErrors((prevErrors) => ({
-					...prevErrors,
-					serviceCatagory: "",
-				}));
-			}
 		}
 		// Only proceed to the next step if there are no errors
 		if (!hasErrors) {
@@ -127,7 +123,9 @@ function App() {
 				...prevErrors,
 				err: "",
 			}));
-			setStep((prev) => prev + 1);
+			if (step > 2 && step < 5) {
+				setStep((prev) => prev + 1);
+			}
 		}
 	};
 
@@ -420,6 +418,30 @@ function App() {
 									</div>
 								</div>
 							</div>
+
+							<div className="flex justify-center items-center space-x-7 bg-[#F8F9FE] p-5 rounded-lg">
+								<p
+									className={`${
+										togleValue ? "text-gray-500" : "text-slate-900"
+									} font-semibold`}>
+									Monthly
+								</p>
+								<label className="inline-flex items-center cursor-pointer">
+									<input
+										type="checkbox"
+										value=""
+										className="sr-only peer"
+										onChange={(e) => setTogleValue(!togleValue)}
+									/>
+									<div className="relative w-11 h-6 bg-[#210e41] rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#210e41] "></div>
+								</label>
+								<p
+									className={`${
+										togleValue ? "text-slate-900" : "text-gray-500"
+									} font-semibold`}>
+									Yearly
+								</p>
+							</div>
 						</div>
 					)}
 
@@ -487,7 +509,7 @@ function App() {
 										<p className=" font-medium text-blue-600">+$2/mo</p>
 									)}
 									{!isMontly && (
-										<p className=" font-medium text-blue-600">+$20/mo</p>
+										<p className=" font-medium text-blue-600">+$20/yr</p>
 									)}
 								</div>
 
@@ -516,7 +538,7 @@ function App() {
 										<p className=" font-medium text-blue-600">+$2/mo</p>
 									)}
 									{!isMontly && (
-										<p className=" font-medium text-blue-600">+$20/mo</p>
+										<p className=" font-medium text-blue-600">+$20/yr</p>
 									)}
 								</div>
 							</div>
